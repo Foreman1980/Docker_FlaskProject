@@ -31,39 +31,40 @@ def load_model(model_path):
 		model = dill.load(f)
 	print(model)
 
-# modelpath = "/app/app/models/logreg_pipeline.dill"
-modelpath = "/home/foreman/JupyterProjects/4.1_MachineLearningInBusiness/data/webinar_9/logreg_pipeline.dill"
+modelpath = "/app/models/logreg_pipeline.dill"
+# modelpath = "/home/foreman/JupyterProjects/4.1_MachineLearningInBusiness/data/webinar_9/logreg_pipeline.dill"
 load_model(modelpath)
 
 @app.route("/", methods=["GET"])
 def general():
-	return """Welcome to fraudelent prediction process. Please use 'http://<address>/predict' to POST"""
+	return r"""Welcome to blood donation prediction process. Please use 'http://...address.../predict' to POST"""
 
 @app.route("/predict", methods=["POST"])
 def predict():
-	# initialize the data dictionary that will be returned from the
-	# view
+	# initialize the data dictionary that will be returned from the view
 	data = {"success": False}
 	dt = strftime("[%Y-%b-%d %H:%M:%S]")
 	# ensure an image was properly uploaded to our endpoint
 	if flask.request.method == "POST":
 
-		recency, frequency, time = "", "", ""
+		# recency, frequency, time = np.int64, np.int64, np.int64
 		request_json = flask.request.get_json()
-		if request_json["recency"]:
+		if request_json["recency"] >= 0:
 			recency = request_json['recency']
 
-		if request_json["frequency"]:
+		if request_json["frequency"] >= 0:
 			frequency = request_json['frequency']
 
-		if request_json["time"]:
-			time = request_json['time']
-		logger.info(f'{dt} Data: recency={recency}, frequency={frequency}, time={time}')
+		if request_json["time"] >= 0:
+			_time = request_json['time']
+
+		logger.info(f'{dt} Data: recency={recency}, frequency={frequency}, time={_time}')
+
 		try:
 			y_pred = model.predict_proba(pd.DataFrame({
 				"recency": [recency],
 				"frequency": [frequency],
-				"time": [time]
+				"time": [_time]
 			}))
 		except AttributeError as e:
 			logger.warning(f'{dt} Exception: {str(e)}')
