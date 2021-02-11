@@ -31,8 +31,7 @@ def load_model(model_path):
 		model = dill.load(f)
 	print(model)
 
-modelpath = "/app/models/logreg_pipeline.dill"
-# modelpath = "/home/foreman/JupyterProjects/4.1_MachineLearningInBusiness/data/webinar_9/logreg_pipeline.dill"
+modelpath = "/usr/src/app/models/logreg_pipeline.dill"
 load_model(modelpath)
 
 @app.route("/", methods=["GET"])
